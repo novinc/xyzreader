@@ -10,21 +10,26 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.TypedValue;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowInsets;
 
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
 import com.example.xyzreader.data.ItemsContract;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * An activity representing a single Article detail screen, letting you swipe between articles.
  */
-public class ArticleDetailActivity extends ActionBarActivity
-        implements LoaderManager.LoaderCallbacks<Cursor> {
+public class ArticleDetailActivity extends AppCompatActivity
+        implements LoaderManager.LoaderCallbacks<Cursor>, ArticleDetailFragment.fragmentCallback {
 
     private Cursor mCursor;
     private long mStartId;
@@ -35,8 +40,11 @@ public class ArticleDetailActivity extends ActionBarActivity
 
     private ViewPager mPager;
     private MyPagerAdapter mPagerAdapter;
-    private View mUpButtonContainer;
     private View mUpButton;
+
+    private Map<Long, Integer> colorMap;
+    private Map<Long, Toolbar> toolbarMap;
+    private View upContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +56,9 @@ public class ArticleDetailActivity extends ActionBarActivity
         }
         setContentView(R.layout.activity_article_detail);
 
+        colorMap = new HashMap<>();
+        toolbarMap = new HashMap<>();
+
         getLoaderManager().initLoader(0, null, this);
 
         mPagerAdapter = new MyPagerAdapter(getFragmentManager());
@@ -57,7 +68,7 @@ public class ArticleDetailActivity extends ActionBarActivity
                 .applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, getResources().getDisplayMetrics()));
         mPager.setPageMarginDrawable(new ColorDrawable(0x22000000));
 
-        mPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+        mPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageScrollStateChanged(int state) {
                 super.onPageScrollStateChanged(state);
@@ -76,7 +87,7 @@ public class ArticleDetailActivity extends ActionBarActivity
             }
         });
 
-        mUpButtonContainer = findViewById(R.id.up_container);
+        //upContainer = findViewById(R.id.up_container);
 
         mUpButton = findViewById(R.id.action_up);
         mUpButton.setOnClickListener(new View.OnClickListener() {
@@ -87,16 +98,16 @@ public class ArticleDetailActivity extends ActionBarActivity
         });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mUpButtonContainer.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
+            /*upContainer.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
                 @Override
                 public WindowInsets onApplyWindowInsets(View view, WindowInsets windowInsets) {
                     view.onApplyWindowInsets(windowInsets);
                     mTopInset = windowInsets.getSystemWindowInsetTop();
-                    mUpButtonContainer.setTranslationY(mTopInset);
+                    upContainer.setTranslationY(mTopInset);
                     updateUpButtonPosition();
                     return windowInsets;
                 }
-            });
+            });*/
         }
 
         if (savedInstanceState == null) {
@@ -134,6 +145,19 @@ public class ArticleDetailActivity extends ActionBarActivity
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Log.v("eyyyy", "options selected");
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Log.v("eyyyy", "up button press");
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
         mCursor = null;
         mPagerAdapter.notifyDataSetChanged();
@@ -151,10 +175,26 @@ public class ArticleDetailActivity extends ActionBarActivity
         mUpButton.setTranslationY(Math.min(mSelectedItemUpButtonFloor - upButtonNormalBottom, 0));
     }
 
+    @Override
+    public void newColor(long id, int color) {
+        if (colorMap != null) {
+            colorMap.put(id, color);
+        }
+    }
+
+    @Override
+    public void newToolbar(long id, Toolbar toolbar) {
+        if (toolbar != null) {
+            toolbarMap.put(id, toolbar);
+        }
+    }
+
     private class MyPagerAdapter extends FragmentStatePagerAdapter {
         public MyPagerAdapter(FragmentManager fm) {
             super(fm);
         }
+
+
 
         @Override
         public void setPrimaryItem(ViewGroup container, int position, Object object) {
@@ -163,6 +203,25 @@ public class ArticleDetailActivity extends ActionBarActivity
             if (fragment != null) {
                 mSelectedItemUpButtonFloor = fragment.getUpButtonFloor();
                 updateUpButtonPosition();
+                if (colorMap.get(fragment.getItemId()) != null) {
+                    int col = colorMap.get(fragment.getItemId());
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        getWindow().setStatusBarColor(col);
+                    }
+                }
+                if (toolbarMap.get(fragment.getItemId()) != null) {
+                    Toolbar toolbar = toolbarMap.get(fragment.getItemId());
+                    toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
+                    setSupportActionBar(toolbar);
+                    toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            onBackPressed();
+                        }
+                    });
+                    getSupportActionBar().setDisplayShowTitleEnabled(false);
+                }
+                invalidateOptionsMenu();
             }
         }
 
