@@ -44,7 +44,7 @@ public class ArticleDetailActivity extends AppCompatActivity
 
     private Map<Long, Integer> colorMap;
     private Map<Long, Toolbar> toolbarMap;
-    private View upContainer;
+    //private View upContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,10 +146,8 @@ public class ArticleDetailActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.v("eyyyy", "options selected");
         switch (item.getItemId()) {
             case android.R.id.home:
-                Log.v("eyyyy", "up button press");
                 break;
             default:
                 break;
