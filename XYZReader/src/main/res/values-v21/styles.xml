@@ -2,6 +2,7 @@
 <resources>
 
     <style name="Theme.Bacon" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowContentTransitions">true</item>
         <item name="android:statusBarColor">@color/theme_primary_dark</item>
         <item name="colorPrimary">@color/theme_primary</item>
         <item name="colorPrimaryDark">@color/theme_primary_dark</item>
@@ -11,5 +12,6 @@
     <style name="Theme.Bacon.Detail" parent="Theme.Bacon">
         <item name="android:windowContentTransitions">true</item>
         <item name="android:windowEnterTransition">@transition/details_enter_transition</item>
+        <item name="android:windowReturnTransition">@transition/details_exit_transition</item>
     </style>
 </resources>
