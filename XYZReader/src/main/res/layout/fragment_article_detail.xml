@@ -5,6 +5,7 @@
     android:layout_height="match_parent">
 
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/detail_card_top_margin">
@@ -30,7 +31,8 @@
                     android:layout_height="@dimen/detail_card_top_margin"
                     />
 
-                <View
+                <FrameLayout
+                    android:id="@+id/protection"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/photo_background_protection" />
@@ -60,6 +62,7 @@
 
 
             <com.example.xyzreader.ui.MaxWidthLinearLayout
+                android:id="@+id/scrollviewlayout"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

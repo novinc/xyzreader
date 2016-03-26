@@ -17,12 +17,13 @@
         android:orientation="vertical">
 
         <!--suppress AndroidLintContentDescription -->
-        <com.example.xyzreader.ui.DynamicHeightNetworkImageView
+        <ImageView
             android:id="@+id/thumbnail"
             android:scaleType="centerCrop"
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:layout_gravity="center_horizontal"
+            android:adjustViewBounds="true"
             android:background="@color/photo_placeholder" />
 
         <TextView

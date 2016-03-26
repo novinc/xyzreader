@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<slide xmlns:android="http://schemas.android.com/apk/res/android"
-    android:slideEdge="bottom"
-    android:duration="500">
-    <targets>
-        <target android:targetId="@id/scrollview"/>
-    </targets>
+<transitionSet xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="500"
+    android:transitionOrdering="together">
 
-</slide>
+    <slide android:slideEdge="bottom">
+        <targets>
+            <target android:targetId="@id/scrollviewlayout"/>
+        </targets>
+    </slide>
+
+    <fade android:fadingMode="fade_out" android:duration="100">
+        <targets>
+            <target android:targetId="@id/appbar" />
+        </targets>
+    </fade>
+
+</transitionSet>
