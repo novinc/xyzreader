@@ -13,6 +13,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.ActivityCompat;
@@ -132,6 +133,24 @@ public class ArticleListActivity extends AppCompatActivity implements
 
         if (savedInstanceState == null) {
             refresh();
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable("layoutmanager", mRecyclerView.getLayoutManager().onSaveInstanceState());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState != null && mRecyclerView != null && mRecyclerView.getLayoutManager() != null) {
+            Parcelable layoutmanager = savedInstanceState.getParcelable("layoutmanager");
+            mRecyclerView.getLayoutManager().onRestoreInstanceState(layoutmanager);
+            if (findViewById(R.id.toolbar_container) != null) {
+                ((AppBarLayout) findViewById(R.id.toolbar_container)).setExpanded(false);
+            }
         }
     }
 
